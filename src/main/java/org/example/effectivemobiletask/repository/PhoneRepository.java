@@ -14,7 +14,7 @@ public interface PhoneRepository extends JpaRepository<Phone, Long> {
 
     boolean existsByNumberAndIdNot(String number, Long id);
 
-    List<Phone> getAllByUserUsername(String username);
+    List<Phone> findAllByUserUsername(String username);
 
     Optional<Phone> findByIdAndUserUsername(Long id, String username);
 

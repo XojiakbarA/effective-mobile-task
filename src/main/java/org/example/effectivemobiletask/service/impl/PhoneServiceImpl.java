@@ -36,7 +36,7 @@ public class PhoneServiceImpl implements PhoneService {
 
     @Override
     public List<PhoneDTO> getAllByUserUsername(String username) {
-        return phoneRepository.getAllByUserUsername(username).stream().map(mapper::toDTO).toList();
+        return phoneRepository.findAllByUserUsername(username).stream().map(mapper::toDTO).toList();
     }
 
     @Override

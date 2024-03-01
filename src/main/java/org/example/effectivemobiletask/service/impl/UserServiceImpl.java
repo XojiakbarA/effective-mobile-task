@@ -75,6 +75,7 @@ public class UserServiceImpl implements UserService {
 
         Account account = new Account();
         account.setAmount(request.getInitAmount());
+        account.setInitAmount(request.getInitAmount());
         account.setUser(user);
 
         user.getPhones().add(phone);

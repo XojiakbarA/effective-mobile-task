@@ -11,7 +11,10 @@ public class Account {
     private Long id;
 
     @Column(nullable = false)
-    private Double amount = 100D;
+    private Double initAmount;
+
+    @Column(nullable = false)
+    private Double amount;
 
     @OneToOne(optional = false)
     private User user;
