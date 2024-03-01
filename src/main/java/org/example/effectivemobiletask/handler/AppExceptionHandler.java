@@ -2,11 +2,13 @@ package org.example.effectivemobiletask.handler;
 
 import jakarta.validation.ConstraintViolationException;
 import org.example.effectivemobiletask.dto.response.ErrorResponse;
+import org.example.effectivemobiletask.exception.OperationIsNotPossibleException;
 import org.example.effectivemobiletask.exception.ResourceExistsException;
 import org.example.effectivemobiletask.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,9 +21,21 @@ import java.util.Map;
 @RestControllerAdvice
 public class AppExceptionHandler {
 
+    @ExceptionHandler(OperationIsNotPossibleException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleOperationIsNotPossible(OperationIsNotPossibleException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleResourceNotFound(ResourceNotFoundException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUsernameNotFound(UsernameNotFoundException e) {
         return new ErrorResponse(e.getMessage());
     }
 
@@ -63,9 +77,9 @@ public class AppExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.name(), errors);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleRuntime(RuntimeException e) {
-        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.name());
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    public ErrorResponse handleRuntime(RuntimeException e) {
+//        return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.name());
+//    }
 }

@@ -5,6 +5,7 @@ import org.example.effectivemobiletask.dto.request.RegisterRequest;
 import org.example.effectivemobiletask.entity.Email;
 import org.example.effectivemobiletask.entity.Phone;
 import org.example.effectivemobiletask.entity.User;
+import org.example.effectivemobiletask.exception.OperationIsNotPossibleException;
 import org.example.effectivemobiletask.exception.ResourceExistsException;
 import org.example.effectivemobiletask.repository.UserRepository;
 import org.example.effectivemobiletask.security.JWTProvider;
@@ -16,6 +17,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -77,5 +79,21 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username).orElseThrow(
+                () -> new UsernameNotFoundException(String.format("User by username '%s' not found", username))
+        );
+    }
+
+    @Override
+    public void checkPhonesCount(String username) {
+        User user = findByUsername(username);
+
+        if (user.getPhones().size() == 1) {
+            throw new OperationIsNotPossibleException("At least one phone number must remain");
+        }
     }
 }
