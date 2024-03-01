@@ -6,7 +6,6 @@ import org.example.effectivemobiletask.entity.Account;
 import org.example.effectivemobiletask.entity.Email;
 import org.example.effectivemobiletask.entity.Phone;
 import org.example.effectivemobiletask.entity.User;
-import org.example.effectivemobiletask.exception.OperationIsNotPossibleException;
 import org.example.effectivemobiletask.exception.ResourceExistsException;
 import org.example.effectivemobiletask.repository.UserRepository;
 import org.example.effectivemobiletask.security.JWTProvider;
@@ -93,14 +92,5 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new UsernameNotFoundException(String.format("User by username '%s' not found", username))
         );
-    }
-
-    @Override
-    public void checkPhonesCount(String username) {
-        User user = findByUsername(username);
-
-        if (user.getPhones().size() == 1) {
-            throw new OperationIsNotPossibleException("At least one phone number must remain");
-        }
     }
 }

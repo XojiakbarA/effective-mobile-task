@@ -10,6 +10,4 @@ public interface UserService {
     void register(RegisterRequest request);
 
     User findByUsername(String username);
-
-    void checkPhonesCount(String username);
 }
