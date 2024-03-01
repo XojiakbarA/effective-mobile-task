@@ -2,6 +2,7 @@ package org.example.effectivemobiletask.service.impl;
 
 import org.example.effectivemobiletask.dto.request.LoginRequest;
 import org.example.effectivemobiletask.dto.request.RegisterRequest;
+import org.example.effectivemobiletask.entity.Account;
 import org.example.effectivemobiletask.entity.Email;
 import org.example.effectivemobiletask.entity.Phone;
 import org.example.effectivemobiletask.entity.User;
@@ -72,8 +73,13 @@ public class UserServiceImpl implements UserService {
         email.setValue(request.getEmail());
         email.setUser(user);
 
+        Account account = new Account();
+        account.setAmount(request.getInitAmount());
+        account.setUser(user);
+
         user.getPhones().add(phone);
         user.getEmails().add(email);
+        user.setAccount(account);
         user.setFullName(request.getFullName());
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
