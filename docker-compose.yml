@@ -1,0 +1,22 @@
+services:
+  db:
+    container_name: postgres_container
+    ports:
+      - 5432:5432
+    image: postgres
+    environment:
+      - POSTGRES_DB=effective-mobile-task
+      - POSTGRES_USER=khojiakbar
+      - POSTGRES_PASSWORD=root
+  task_app:
+    container_name: task_app_container
+    ports:
+      - 8080:8080
+#    build: .
+    image: xojiakbara/effective-mobile-task
+    environment:
+      db-url: jdbc:postgresql://db:5432/effective-mobile-task
+      db-username: khojiakbar
+      db-password: root
+    depends_on:
+      - db
