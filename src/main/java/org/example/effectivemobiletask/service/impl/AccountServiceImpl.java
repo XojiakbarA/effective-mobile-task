@@ -2,7 +2,6 @@ package org.example.effectivemobiletask.service.impl;
 
 import org.example.effectivemobiletask.dto.request.TransferRequest;
 import org.example.effectivemobiletask.entity.Account;
-import org.example.effectivemobiletask.entity.Phone;
 import org.example.effectivemobiletask.exception.OperationIsNotPossibleException;
 import org.example.effectivemobiletask.exception.ResourceNotFoundException;
 import org.example.effectivemobiletask.repository.AccountRepository;
