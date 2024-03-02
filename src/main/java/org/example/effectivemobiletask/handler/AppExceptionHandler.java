@@ -2,9 +2,11 @@ package org.example.effectivemobiletask.handler;
 
 import jakarta.validation.ConstraintViolationException;
 import org.example.effectivemobiletask.dto.response.ErrorResponse;
+import org.example.effectivemobiletask.exception.InvalidDateFormatException;
 import org.example.effectivemobiletask.exception.OperationIsNotPossibleException;
 import org.example.effectivemobiletask.exception.ResourceExistsException;
 import org.example.effectivemobiletask.exception.ResourceNotFoundException;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
@@ -24,6 +26,18 @@ public class AppExceptionHandler {
     @ExceptionHandler(OperationIsNotPossibleException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleOperationIsNotPossible(OperationIsNotPossibleException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(InvalidDateFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleInvalidDateFormat(InvalidDateFormatException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(PropertyReferenceException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlePropertyReference(PropertyReferenceException e) {
         return new ErrorResponse(e.getMessage());
     }
 

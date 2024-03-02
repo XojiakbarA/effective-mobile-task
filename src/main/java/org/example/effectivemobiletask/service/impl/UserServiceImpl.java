@@ -1,7 +1,9 @@
 package org.example.effectivemobiletask.service.impl;
 
+import org.example.effectivemobiletask.dto.request.FilterRequest;
 import org.example.effectivemobiletask.dto.request.LoginRequest;
 import org.example.effectivemobiletask.dto.request.RegisterRequest;
+import org.example.effectivemobiletask.dto.view.UserDTO;
 import org.example.effectivemobiletask.entity.Account;
 import org.example.effectivemobiletask.entity.Email;
 import org.example.effectivemobiletask.entity.Phone;
@@ -12,7 +14,13 @@ import org.example.effectivemobiletask.security.JWTProvider;
 import org.example.effectivemobiletask.service.EmailService;
 import org.example.effectivemobiletask.service.PhoneService;
 import org.example.effectivemobiletask.service.UserService;
+import org.example.effectivemobiletask.util.Mapper;
+import org.example.effectivemobiletask.util.UserSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +29,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -39,6 +48,8 @@ public class UserServiceImpl implements UserService {
     private PhoneService phoneService;
     @Autowired
     private EmailService emailService;
+    @Autowired
+    private Mapper mapper;
 
     @Override
     public String login(LoginRequest request) {
@@ -92,5 +103,21 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByUsername(username).orElseThrow(
                 () -> new UsernameNotFoundException(String.format("User by username '%s' not found", username))
         );
+    }
+
+    @Override
+    public Page<UserDTO> getAllByFilter(List<FilterRequest> filters, int page, int size, String sortBy, String dir) {
+        if (page < 1) {
+            page = 1;
+        }
+        if (size < 1) {
+            size = 10;
+        }
+        Sort sort = Sort.by(sortBy).ascending();
+        if (dir.equals("desc")) {
+            sort = Sort.by(sortBy).descending();
+        }
+        Pageable pageable = PageRequest.of(page - 1, size, sort);
+        return userRepository.findAll(UserSpecification.filter(filters), pageable).map(mapper::toDTO);
     }
 }
