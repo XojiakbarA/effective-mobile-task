@@ -11,6 +11,8 @@ import org.example.effectivemobiletask.repository.EmailRepository;
 import org.example.effectivemobiletask.service.EmailService;
 import org.example.effectivemobiletask.service.UserService;
 import org.example.effectivemobiletask.util.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import java.util.List;
 
 @Service
 public class EmailServiceImpl implements EmailService {
+
+    private static final Logger logger = LoggerFactory.getLogger(EmailServiceImpl.class);
     private final String RESOURCE_NAME = Email.class.getSimpleName();
 
     @Autowired
@@ -51,7 +55,11 @@ public class EmailServiceImpl implements EmailService {
         email.setUser(user);
         email.setValue(request.getEmail());
 
-        return mapper.toDTO(emailRepository.save(email));
+        Email savedEmail = emailRepository.save(email);
+
+        logger.info("Email created - " + savedEmail);
+
+        return mapper.toDTO(savedEmail);
     }
 
     @Override
@@ -66,7 +74,11 @@ public class EmailServiceImpl implements EmailService {
 
         email.setValue(request.getEmail());
 
-        return mapper.toDTO(emailRepository.save(email));
+        Email savedEmail = emailRepository.save(email);
+
+        logger.info("Email updated - old: " + email + ", new: " + savedEmail);
+
+        return mapper.toDTO(savedEmail);
     }
 
     @Override
@@ -77,9 +89,13 @@ public class EmailServiceImpl implements EmailService {
             throw new OperationIsNotPossibleException("At least one phone number must remain");
         }
 
-        user.getEmails().remove(findById(id));
+        Email email = findById(id);
+
+        user.getEmails().remove(email);
 
         emailRepository.deleteByIdAndUserUsername(id, username);
+
+        logger.info("Email deleted - " + email);
     }
 
     private Email findById(Long id) {

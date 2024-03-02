@@ -16,6 +16,8 @@ import org.example.effectivemobiletask.service.PhoneService;
 import org.example.effectivemobiletask.service.UserService;
 import org.example.effectivemobiletask.util.Mapper;
 import org.example.effectivemobiletask.util.UserSpecification;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +36,8 @@ import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    private static final Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
     private final String RESOURCE_NAME = User.class.getSimpleName();
 
     @Autowired
@@ -58,6 +62,8 @@ public class UserServiceImpl implements UserService {
         );
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+        logger.info("User logged in - " + userDetails);
 
         return jwtProvider.generateToken(Map.of("roles", userDetails.getAuthorities()), userDetails);
     }
@@ -96,6 +102,7 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         userRepository.save(user);
+        logger.info("User created - " + user);
     }
 
     @Override

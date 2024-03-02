@@ -24,7 +24,7 @@ public class DataLoader implements CommandLineRunner {
         userService.register(getRegisterRequest(
                 "zari",
                 "321",
-                "Akramova Zarina Rustam-ugli",
+                "Akramova Zarina Rustam-qizi",
                 1500D,
                 "zari@mail.com",
                 "998900088611"

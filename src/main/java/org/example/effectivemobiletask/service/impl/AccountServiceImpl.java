@@ -6,6 +6,8 @@ import org.example.effectivemobiletask.exception.OperationIsNotPossibleException
 import org.example.effectivemobiletask.exception.ResourceNotFoundException;
 import org.example.effectivemobiletask.repository.AccountRepository;
 import org.example.effectivemobiletask.service.AccountService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @Service
 public class AccountServiceImpl implements AccountService {
+    private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
     private final String RESOURCE_NAME = Account.class.getSimpleName();
 
     @Autowired
@@ -44,6 +47,8 @@ public class AccountServiceImpl implements AccountService {
         receiver.setAmount(receiver.getAmount() + amount);
 
         accountRepository.saveAll(List.of(sender, receiver));
+
+        logger.info("Transfer from " + username + " to " + request.getUsername() + " - amount: " + amount);
     }
 
     private Account findByUsername(String username) {

@@ -11,6 +11,8 @@ import org.example.effectivemobiletask.repository.PhoneRepository;
 import org.example.effectivemobiletask.service.PhoneService;
 import org.example.effectivemobiletask.service.UserService;
 import org.example.effectivemobiletask.util.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,8 @@ import java.util.List;
 
 @Service
 public class PhoneServiceImpl implements PhoneService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PhoneServiceImpl.class);
     private final String RESOURCE_NAME = Phone.class.getSimpleName();
 
     @Autowired
@@ -51,7 +55,11 @@ public class PhoneServiceImpl implements PhoneService {
         phone.setUser(user);
         phone.setNumber(request.getPhoneNumber());
 
-        return mapper.toDTO(phoneRepository.save(phone));
+        Phone savedPhone = phoneRepository.save(phone);
+
+        logger.info("Phone created - " + savedPhone);
+
+        return mapper.toDTO(savedPhone);
     }
 
     @Override
@@ -66,7 +74,11 @@ public class PhoneServiceImpl implements PhoneService {
 
         phone.setNumber(request.getPhoneNumber());
 
-        return mapper.toDTO(phoneRepository.save(phone));
+        Phone savedPhone = phoneRepository.save(phone);
+
+        logger.info("Phone updated - old: " + phone + ", new: " + savedPhone);
+
+        return mapper.toDTO(savedPhone);
     }
 
     @Override
@@ -77,9 +89,13 @@ public class PhoneServiceImpl implements PhoneService {
             throw new OperationIsNotPossibleException("At least one phone number must remain");
         }
 
-        user.getPhones().remove(findById(id));
+        Phone phone = findById(id);
+
+        user.getPhones().remove(phone);
 
         phoneRepository.deleteByIdAndUserUsername(id, username);
+
+        logger.info("Phone deleted - " + phone);
     }
 
     private Phone findById(Long id) {
